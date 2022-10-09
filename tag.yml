@@ -1,0 +1,35 @@
+- hosts: db
+  gather_facts: false
+  become: true
+  tasks:
+  - name: welcome   
+    debug:
+      msg: "Welcome to BestTechnology"
+    tags:
+    - echo
+  - name: install apache webservers
+    package: 
+      name: httpd 
+      state: present
+    tags:
+    - install
+  - name: start apache
+    systemd: 
+      name: httpd 
+      state: started
+    tags:
+    - start   
+  - name: copy index file
+    tags:
+    - copy
+    copy: 
+      src: index.html 
+      dest: /var/www/html/index.html
+    notify:
+    - restart apache
+  handlers:
+  - name: restart apache
+    service: 
+      name: httpd 
+      state: restarted
+
